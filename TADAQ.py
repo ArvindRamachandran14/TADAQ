@@ -138,7 +138,7 @@ class producer() :
 				tash.data[recIdx].Run = data_dict['Run']
 				tash.data[recIdx].Status = data_dict['Status']
 				tash.recIdx = recIdx
-				print('P: {0:4d} {1:10.3f} {2:10.3f} {3:10.3f} {4:10.3f} {5:10.3f} {6:10.3f} {7:10.3f} {8:10.3f} {9:10.3f} {10:10.3f} {11:10.3f} {12:10.3f} {13:10.3f} {14:10.3f} {15:10.3f} {16:10.3f} {17:10.3f} {18:10.3f} {19:10.3f} {20:10.3f} {21:10.3f} {22:10.3f} {23:10.3f} {24:10.3f} {25:10.3f} {26:10.3f} {27:10.3f} {28:10.3f} {29:10.3f} {30:10.3f} {31:10.3f}, {32:10.3f}'.format( \
+				print('P: {0:4d} {1:10.3f} {2:10.3f} {3:10.3f} {4:10.3f} {5:10.3f} {6:10.3f} {7:10.3f} {8:10.3f} {9:10.3f} {10:10.3f} {11:10.3f} {12:10.3f} {13:10.3f} {14:10.3f} {15:10.3f} {16:10.3f} {17:10.3f} {18:10.3f} {19:10.3f} {20:10.3f} {21:10.3f} {22:10.3f} {23:10.3f} {24:10.3f} {25:10.3f} {26:10.3f} {27:10.3f} {28:10.3f} {29:10.3f} {30:10.3f} {31:d}, {32:d}'.format( \
 					tash.data[recIdx].recNum, tash.data[recIdx].recTime, \
 							tash.data[recIdx].recNum, tash.data[recIdx].recTime, tash.data[recIdx].SC_T1, \
 							tash.data[recIdx].SC_T2, tash.data[recIdx].CC_T1, tash.data[recIdx].DPG_T1, \
@@ -179,11 +179,16 @@ class producer() :
 
 		data_dict = {}
 
-		for key in keys:
+		for i in range(len(keys)):
 			
-			#print(ET.fromstring(Output_string).find(key)[0].text)
+			if i < 30:
 
-			data_dict[key] = float(ET.fromstring(Output_string).find(key)[0].text)
+				data_dict[keys[i]] = float(ET.fromstring(Output_string).find(keys[i])[0].text)
+
+			else:
+
+				data_dict[keys[i]] = int(ET.fromstring(Output_string).find(keys[i])[0].text)
+
 
 		return(data_dict)
 
