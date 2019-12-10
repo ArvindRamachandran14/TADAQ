@@ -50,8 +50,8 @@ class TAData(Structure) :
 		('Dew_point_temp', c_double),
 		('Sample_weight', c_double),
 		('V_state', c_double),
-		('Run', c_double),
-		('Status', c_double)
+		('Run', c_int),
+		('Status', c_int)
 		]
 
 class TAShare(Structure) :
@@ -179,11 +179,17 @@ class producer() :
 
 		data_dict = {}
 
-		for key in keys:
+		for i in range(len(keys)):
 			
-			#print(ET.fromstring(Output_string).find(key)[0].text)
+			if i < 30:
 
-			data_dict[key] = float(ET.fromstring(Output_string).find(key)[0].text)
+				data_dict[keys[i]] = float(ET.fromstring(Output_string).find(keys[i])[0].text)
+
+			else:
+				print(keys[i])
+				
+				data_dict[keys[i]] = int(ET.fromstring(Output_string).find(keys[i])[0].text)
+
 
 		return(data_dict)
 
