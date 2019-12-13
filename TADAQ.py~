@@ -185,7 +185,6 @@ class producer() :
 				data_dict[keys[i]] = float(ET.fromstring(Output_string).find(keys[i])[0].text)
 
 			else:
-				print(keys[i])
 				
 				data_dict[keys[i]] = int(ET.fromstring(Output_string).find(keys[i])[0].text)
 
