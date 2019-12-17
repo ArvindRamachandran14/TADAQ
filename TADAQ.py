@@ -5,6 +5,9 @@ from random import random #random numbers
 import mmap #memory map
 import os 
 from datetime import datetime
+
+import datetime as dt 
+
 import asyncio #timing to work right asychronous call - go and read the data and the meanwhile you can do other things
 import serial
 import xml.etree.ElementTree as ET
@@ -121,13 +124,13 @@ class producer() :
 
 	def getDataFromTA(self) :
 
-		print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+		print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 		ser.write('g-all\n'.encode())
 
 		Output_string = ser.readline().decode()
 
-		print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+		print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 		Split_strings_list  = Output_string.split(',')
 
