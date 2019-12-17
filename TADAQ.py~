@@ -5,9 +5,13 @@ from random import random #random numbers
 import mmap #memory map
 import os 
 from datetime import datetime
+
+import datetime as dt 
+
 import asyncio #timing to work right asychronous call - go and read the data and the meanwhile you can do other things
 import serial
 import xml.etree.ElementTree as ET
+import time
 
 encoding = 'utf-8' # covers straight ascii 8 bit char codes 
 loop = None #variable timeer uses
@@ -70,7 +74,7 @@ class producer() :
 					recIdx = 0
 
 				# Get some data
-				data_dict = self.getDataFromTA()
+				data_list = self.getDataFromTA()
 
 				# Get the time
 				now = datetime.now()
@@ -82,21 +86,25 @@ class producer() :
 				tash.data[recIdx].recNum = self.recNum
 				self.recNum += 1
 				tash.data[recIdx].recTime = seconds
-				tash.data[recIdx].SC_T1 = data_dict['SC_T1']
-				tash.data[recIdx].SC_T2 = data_dict['SC_T2']
-				tash.data[recIdx].CC_T1 = data_dict['CC_T1']
-				tash.data[recIdx].DPG_T1 = data_dict['DPG_T1']
-				tash.data[recIdx].pH2O = data_dict['pH2O']
-				tash.data[recIdx].pCO2 = data_dict['pCO2']
-				tash.data[recIdx].Dew_point_temp = data_dict['Dew_point_temp']
-				tash.data[recIdx].Sample_weight = data_dict['Sample_weight']
-				tash.data[recIdx].Status = data_dict['Status']
+				tash.data[recIdx].SC_T1 = data_list[0]
+				tash.data[recIdx].SC_T2 = data_list[1]
+				tash.data[recIdx].CC_T1 = data_list[2]
+				tash.data[recIdx].DPG_T1 = data_list[3]
+				tash.data[recIdx].pH2O = data_list[4]
+				tash.data[recIdx].pCO2 = data_list[5]
+				tash.data[recIdx].Dew_point_temp = data_list[6]
+				tash.data[recIdx].Sample_weight = data_list[7]
+				tash.data[recIdx].Status = data_list[8]
 				tash.recIdx = recIdx
+
+				'''
 				print('P: {0:4d} {1:10.3f} {2:10.3f} {3:10.3f} {4:10.3f} {5:10.3f} {6:10.3f} {7:10.3f} {8:10.3f} {9:10.3f} {10:d}'.format( \
 					tash.data[recIdx].recNum, tash.data[recIdx].recTime, \
 					tash.data[recIdx].SC_T1, tash.data[recIdx].SC_T2, tash.data[recIdx].CC_T1, tash.data[recIdx].DPG_T1, \
 					tash.data[recIdx].pH2O, tash.data[recIdx].pCO2, tash.data[recIdx].Dew_point_temp, \
 					tash.data[recIdx].Sample_weight, tash.data[recIdx].Status))
+
+				'''
 				yield from asyncio.sleep(self.interval)
 		return 0
 		
@@ -116,30 +124,32 @@ class producer() :
 
 	def getDataFromTA(self) :
 
+		#print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+
 		ser.write('g-all\n'.encode())
 
 		Output_string = ser.readline().decode()
 
+		#print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+
 		Split_strings_list  = Output_string.split(',')
 
-		keys = 	['SC_T1','SC_T2','CC_T1','DPG_T1','pH2O','pCO2','Dew_point_temp','Sample_weight','Status']
+		data_list = []
 
-		data_dict = {}
-
-		for i in range(len(keys)):
+		for i in range(9):
 			
 			if i < 8:
 
-				data_dict[keys[i]] = float(Split_strings_list[i])
+				data_list.append(float(Split_strings_list[i]))
 
 			else:
 				
-				data_dict[keys[i]] = int(Split_strings_list[i])
+				data_list.append(int(Split_strings_list[i]))
 
-		return(data_dict)
+		return(data_list)
 
 # main program
-prod = producer(6)
+prod = producer(5)
 loop = asyncio.get_event_loop()
 loop.run_until_complete(prod.produce())
 loop.close()
