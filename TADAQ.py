@@ -119,8 +119,6 @@ class producer() :
 		ser.write('g-all\n'.encode())
 
 		Output_string = ser.readline().decode()
-		
-		root = ET.fromstring(Output_string)
 
 		keys = 	['SC_T1','SC_T2','CC_T1','DPG_T1','pH2O','pCO2','Dew_point_temp','Sample_weight','Status']
 
@@ -130,7 +128,7 @@ class producer() :
 			
 			if i < 8:
 
-				data_dict[keys[i]] = float(ET.fromstring(Output_string).find(keys[i])[0].text)
+				data_dict[keys[i]] = float()
 
 			else:
 				
