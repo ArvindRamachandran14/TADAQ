@@ -120,6 +120,8 @@ class producer() :
 
 		Output_string = ser.readline().decode()
 
+		Split_strings_list  = Output_string.split(',')
+
 		keys = 	['SC_T1','SC_T2','CC_T1','DPG_T1','pH2O','pCO2','Dew_point_temp','Sample_weight','Status']
 
 		data_dict = {}
@@ -128,12 +130,11 @@ class producer() :
 			
 			if i < 8:
 
-				data_dict[keys[i]] = float()
+				data_dict[keys[i]] = float(Split_strings_list[i])
 
 			else:
 				
-				data_dict[keys[i]] = int(ET.fromstring(Output_string).find(keys[i])[0].text)
-
+				data_dict[keys[i]] = int(Split_strings_list[i])
 
 		return(data_dict)
 
