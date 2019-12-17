@@ -13,7 +13,7 @@ encoding = 'utf-8' # covers straight ascii 8 bit char codes
 loop = None #variable timeer uses
 recCount = 21 #how many records are in the shared memory 
 
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=3)
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=3)
 
 class TAData(Structure) :
 	_pack_ = 4
