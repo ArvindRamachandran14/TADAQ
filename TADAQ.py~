@@ -13,7 +13,7 @@ encoding = 'utf-8' # covers straight ascii 8 bit char codes
 loop = None #variable timeer uses
 recCount = 21 #how many records are in the shared memory 
 
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=3)
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=3)
 
 class TAData(Structure) :
 	_pack_ = 4
@@ -24,33 +24,10 @@ class TAData(Structure) :
 		('SC_T2', c_double),
 		('CC_T1', c_double),
 		('DPG_T1', c_double),
-		('SC_T_Set', c_double),
-		('CC_T_Set', c_double),
-		('DPG_T_Set', c_double),
-		('SC_P', c_double),
-		('CC_P', c_double),
-		('DPG_P', c_double),
-		('SC_I', c_double),
-		('CC_I', c_double),
-		('DPG_I', c_double),
-		('SC_D', c_double),
-		('CC_D', c_double),
-		('DPG_D', c_double),
-		('SC_State', c_double),
-		('CC_State', c_double),
-		('DPG_State', c_double),
-		('SC_Output', c_double),
-		('CC_Output', c_double),
-		('DPG_Output', c_double),
-		('Cell_pressure', c_double),
-		('Cell_temp', c_double),
-		('IVOLT', c_double),
 		('pH2O', c_double),
 		('pCO2', c_double),
 		('Dew_point_temp', c_double),
 		('Sample_weight', c_double),
-		('V_state', c_double),
-		('Run', c_int),
 		('Status', c_int)
 		]
 
@@ -109,46 +86,17 @@ class producer() :
 				tash.data[recIdx].SC_T2 = data_dict['SC_T2']
 				tash.data[recIdx].CC_T1 = data_dict['CC_T1']
 				tash.data[recIdx].DPG_T1 = data_dict['DPG_T1']
-				tash.data[recIdx].SC_T_Set = data_dict['SC_T_Set']
-				tash.data[recIdx].CC_T_Set = data_dict['CC_T_Set']
-				tash.data[recIdx].DPG_T_Set = data_dict['DPG_T_Set']
-				tash.data[recIdx].SC_P = data_dict['SC_P']
-				tash.data[recIdx].CC_P = data_dict['CC_P']
-				tash.data[recIdx].DPG_P = data_dict['DPG_P']
-				tash.data[recIdx].SC_I = data_dict['SC_I']
-				tash.data[recIdx].CC_I = data_dict['CC_I']
-				tash.data[recIdx].DPG_I = data_dict['DPG_I']
-				tash.data[recIdx].SC_D = data_dict['SC_D'] 
-				tash.data[recIdx].CC_D = data_dict['CC_D']
-				tash.data[recIdx].DPG_D = data_dict['DPG_D']
-				tash.data[recIdx].SC_State = data_dict['SC_State']
-				tash.data[recIdx].CC_State = data_dict['CC_State']
-				tash.data[recIdx].DPG_State = data_dict['DPG_State']
-				tash.data[recIdx].SC_Output = data_dict['SC_Output']
-				tash.data[recIdx].CC_Output = data_dict['CC_Output']
-				tash.data[recIdx].DPG_Output = data_dict['DPG_Output']
-				tash.data[recIdx].Cell_pressure = data_dict['Cell_pressure']
-				tash.data[recIdx].Cell_temp = data_dict['Cell_temp']
-				tash.data[recIdx].IVOLT = data_dict['IVOLT']
 				tash.data[recIdx].pH2O = data_dict['pH2O']
 				tash.data[recIdx].pCO2 = data_dict['pCO2']
 				tash.data[recIdx].Dew_point_temp = data_dict['Dew_point_temp']
 				tash.data[recIdx].Sample_weight = data_dict['Sample_weight']
-				tash.data[recIdx].V_state = data_dict['V_state']
-				tash.data[recIdx].Run = data_dict['Run']
 				tash.data[recIdx].Status = data_dict['Status']
 				tash.recIdx = recIdx
-				print('P: {0:4d} {1:10.3f} {2:10.3f} {3:10.3f} {4:10.3f} {5:10.3f} {6:10.3f} {7:10.3f} {8:10.3f} {9:10.3f} {10:10.3f} {11:10.3f} {12:10.3f} {13:10.3f} {14:10.3f} {15:10.3f} {16:10.3f} {17:10.3f} {18:10.3f} {19:10.3f} {20:10.3f} {21:10.3f} {22:10.3f} {23:10.3f} {24:10.3f} {25:10.3f} {26:10.3f} {27:10.3f} {28:10.3f} {29:10.3f} {30:10.3f} {31:10.3f}, {32:d}, {33:d}'.format( \
+				print('P: {0:4d} {1:10.3f} {2:10.3f} {3:10.3f} {4:10.3f} {5:10.3f} {6:10.3f} {7:10.3f} {8:10.3f} {9:10.3f} {10:d}'.format( \
 					tash.data[recIdx].recNum, tash.data[recIdx].recTime, \
 					tash.data[recIdx].SC_T1, tash.data[recIdx].SC_T2, tash.data[recIdx].CC_T1, tash.data[recIdx].DPG_T1, \
-					tash.data[recIdx].SC_T_Set, tash.data[recIdx].CC_T_Set, tash.data[recIdx].DPG_T_Set, \
-					tash.data[recIdx].SC_P, tash.data[recIdx].CC_P, tash.data[recIdx].DPG_P, tash.data[recIdx].SC_I, \
-					tash.data[recIdx].CC_I, tash.data[recIdx].DPG_I, tash.data[recIdx].SC_D, tash.data[recIdx].CC_D, \
-					tash.data[recIdx].DPG_D, tash.data[recIdx].SC_State, tash.data[recIdx].CC_State, tash.data[recIdx].DPG_State, \
-					tash.data[recIdx].SC_Output, tash.data[recIdx].CC_Output, tash.data[recIdx].DPG_Output, \
-					tash.data[recIdx].Cell_pressure, tash.data[recIdx].Cell_temp, tash.data[recIdx].IVOLT, \
 					tash.data[recIdx].pH2O, tash.data[recIdx].pCO2, tash.data[recIdx].Dew_point_temp, \
-					tash.data[recIdx].Sample_weight, tash.data[recIdx].V_state, tash.data[recIdx].Run, tash.data[recIdx].Status))
+					tash.data[recIdx].Sample_weight, tash.data[recIdx].Status))
 				yield from asyncio.sleep(self.interval)
 		return 0
 		
@@ -174,13 +122,13 @@ class producer() :
 		
 		root = ET.fromstring(Output_string)
 
-		keys = 	['SC_T1','SC_T2','CC_T1','DPG_T1','SC_T_Set','CC_T_Set','DPG_T_Set','SC_P','CC_P','DPG_P','SC_I','CC_I','DPG_I','SC_D','CC_D','DPG_D','SC_State','CC_State','DPG_State','SC_Output','CC_Output','DPG_Output','Cell_pressure','Cell_temp','IVOLT','pH2O','pCO2','Dew_point_temp','Sample_weight','V_state','Run','Status']
+		keys = 	['SC_T1','SC_T2','CC_T1','DPG_T1','pH2O','pCO2','Dew_point_temp','Sample_weight','Status']
 
 		data_dict = {}
 
 		for i in range(len(keys)):
 			
-			if i < 30:
+			if i < 8:
 
 				data_dict[keys[i]] = float(ET.fromstring(Output_string).find(keys[i])[0].text)
 
