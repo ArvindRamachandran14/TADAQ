@@ -119,8 +119,8 @@ class producer() :
 		ser.write('g-all\n'.encode())
 
 		Output_string = ser.readline().decode()
-		
-		root = ET.fromstring(Output_string)
+
+		Split_strings_list  = Output_string.split(',')
 
 		keys = 	['SC_T1','SC_T2','CC_T1','DPG_T1','pH2O','pCO2','Dew_point_temp','Sample_weight','Status']
 
@@ -130,17 +130,16 @@ class producer() :
 			
 			if i < 8:
 
-				data_dict[keys[i]] = float(ET.fromstring(Output_string).find(keys[i])[0].text)
+				data_dict[keys[i]] = float(Split_strings_list[i])
 
 			else:
 				
-				data_dict[keys[i]] = int(ET.fromstring(Output_string).find(keys[i])[0].text)
-
+				data_dict[keys[i]] = int(Split_strings_list[i])
 
 		return(data_dict)
 
 # main program
-prod = producer(5)
+prod = producer(6)
 loop = asyncio.get_event_loop()
 loop.run_until_complete(prod.produce())
 loop.close()
