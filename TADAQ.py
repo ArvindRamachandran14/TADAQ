@@ -8,6 +8,7 @@ from datetime import datetime
 import asyncio #timing to work right asychronous call - go and read the data and the meanwhile you can do other things
 import serial
 import xml.etree.ElementTree as ET
+import time
 
 encoding = 'utf-8' # covers straight ascii 8 bit char codes 
 loop = None #variable timeer uses
@@ -92,11 +93,15 @@ class producer() :
 				tash.data[recIdx].Sample_weight = data_dict['Sample_weight']
 				tash.data[recIdx].Status = data_dict['Status']
 				tash.recIdx = recIdx
+
+				'''
 				print('P: {0:4d} {1:10.3f} {2:10.3f} {3:10.3f} {4:10.3f} {5:10.3f} {6:10.3f} {7:10.3f} {8:10.3f} {9:10.3f} {10:d}'.format( \
 					tash.data[recIdx].recNum, tash.data[recIdx].recTime, \
 					tash.data[recIdx].SC_T1, tash.data[recIdx].SC_T2, tash.data[recIdx].CC_T1, tash.data[recIdx].DPG_T1, \
 					tash.data[recIdx].pH2O, tash.data[recIdx].pCO2, tash.data[recIdx].Dew_point_temp, \
 					tash.data[recIdx].Sample_weight, tash.data[recIdx].Status))
+
+				'''
 				yield from asyncio.sleep(self.interval)
 		return 0
 		
@@ -116,9 +121,13 @@ class producer() :
 
 	def getDataFromTA(self) :
 
+		print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+
 		ser.write('g-all\n'.encode())
 
 		Output_string = ser.readline().decode()
+
+		print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 		Split_strings_list  = Output_string.split(',')
 
