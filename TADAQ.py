@@ -86,15 +86,15 @@ class producer() :
 				tash.data[recIdx].recNum = self.recNum
 				self.recNum += 1
 				tash.data[recIdx].recTime = seconds
-				tash.data[recIdx].SC_T1 = data_dict['SC_T1']
-				tash.data[recIdx].SC_T2 = data_dict['SC_T2']
-				tash.data[recIdx].CC_T1 = data_dict['CC_T1']
-				tash.data[recIdx].DPG_T1 = data_dict['DPG_T1']
-				tash.data[recIdx].pH2O = data_dict['pH2O']
-				tash.data[recIdx].pCO2 = data_dict['pCO2']
-				tash.data[recIdx].Dew_point_temp = data_dict['Dew_point_temp']
-				tash.data[recIdx].Sample_weight = data_dict['Sample_weight']
-				tash.data[recIdx].Status = data_dict['Status']
+				tash.data[recIdx].SC_T1 = data_list[0]
+				tash.data[recIdx].SC_T2 = data_list[1]
+				tash.data[recIdx].CC_T1 = data_list[2]
+				tash.data[recIdx].DPG_T1 = data_list[3]
+				tash.data[recIdx].pH2O = data_list[4]
+				tash.data[recIdx].pCO2 = data_list[5]
+				tash.data[recIdx].Dew_point_temp = data_list[6]
+				tash.data[recIdx].Sample_weight = data_list[7]
+				tash.data[recIdx].Status = data_list[8]
 				tash.recIdx = recIdx
 
 				'''
@@ -124,31 +124,29 @@ class producer() :
 
 	def getDataFromTA(self) :
 
-		print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+		#print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 		ser.write('g-all\n'.encode())
 
 		Output_string = ser.readline().decode()
 
-		print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+		#print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
 		Split_strings_list  = Output_string.split(',')
 
-		keys = 	['SC_T1','SC_T2','CC_T1','DPG_T1','pH2O','pCO2','Dew_point_temp','Sample_weight','Status']
-
-		data_dict = {}
+		data_list = []
 
 		for i in range(len(keys)):
 			
 			if i < 8:
 
-				data_dict[keys[i]] = float(Split_strings_list[i])
+				data_list.append(float(Split_strings_list[i]))
 
 			else:
 				
-				data_dict[keys[i]] = int(Split_strings_list[i])
+				data_list.append(int(Split_strings_list[i]))
 
-		return(data_dict)
+		return(data_list)
 
 # main program
 prod = producer(5)
