@@ -1,5 +1,7 @@
 #! /usr/local/bin/python3 
 
+######### The producer and consumer programs are written to mimic the exchange between the TADAQ and TAGUI ######### 
+
 from ctypes import c_int, c_double, c_byte, c_bool, Structure, sizeof
 from random import random
 import mmap
