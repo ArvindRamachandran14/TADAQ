@@ -1,4 +1,7 @@
+
 #! /usr/local/bin/python3 
+
+#################################### Thermodynammic Analyzer Data Acqusition Program #################################### 
 
 from ctypes import c_int, c_double, c_byte, c_bool, Structure, sizeof #creates c type structures
 from random import random #random numbers
@@ -17,7 +20,7 @@ encoding = 'utf-8' # covers straight ascii 8 bit char codes
 loop = None #variable timeer uses
 recCount = 21 #how many records are in the shared memory 
 
-ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=3)
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=3) #Define serial port
 
 class TAData(Structure) :
 	_pack_ = 4
@@ -47,7 +50,7 @@ class TAShare(Structure) :
 class producer() :
 	def __init__(self, interval) :
 		self.startTime = None
-		self.bDone = False
+		self.bDone = False 
 		self.interval = interval
 		#self.bForked = False
 		self.recNum = 0
@@ -62,12 +65,12 @@ class producer() :
 	def produce(self) :
 		temp1 = temp2 = temp3 = pH2O = pCO2 = 0.0
 		status = 0
-		tash = TAShare.from_buffer(self.mmShare)
-		while not self.bDone :
+		tash = TAShare.from_buffer(self.mmShare) 
+		while not self.bDone : #Run until user wants to EXIT
 			command = bytearray(tash.command).decode(encoding).rstrip('\x00')
 			if command == '%EXIT' :
 				self.mmfd.close()
-				self.bDone = True
+				self.bDone = True #Set the binary variable to Exit program
 			else :
 				recIdx = tash.recIdx + 1
 				if recIdx >= tash.recCount :
@@ -85,6 +88,7 @@ class producer() :
 
 				tash.data[recIdx].recNum = self.recNum
 				self.recNum += 1
+				#################### Transfer data to the data buffer ####################
 				tash.data[recIdx].recTime = seconds
 				tash.data[recIdx].SC_T1 = data_list[0]
 				tash.data[recIdx].SC_T2 = data_list[1]
@@ -97,7 +101,7 @@ class producer() :
 				tash.data[recIdx].Status = data_list[8]
 				tash.recIdx = recIdx
 
-				
+				# Print the TADAQ output
 				print('P: {0:4d} {1:10.3f} {2:10.3f} {3:10.3f} {4:10.3f} {5:10.3f} {6:10.3f} {7:10.3f} {8:10.3f} {9:10.3f} {10:d}'.format( \
 					tash.data[recIdx].recNum, tash.data[recIdx].recTime, \
 					tash.data[recIdx].SC_T1, tash.data[recIdx].SC_T2, tash.data[recIdx].CC_T1, tash.data[recIdx].DPG_T1, \
@@ -118,21 +122,24 @@ class producer() :
 		L = self.mmfd.write(tempTASH) #size of the files
 		self.mmfd.flush() #
 		print('Mapped size: ', L)
+		### Creating shared memory region between TADAQ and TAGUI ### 
 		self.mmShare = \
 			mmap.mmap(self.mmfd.fileno(), sizeof(tempTASH), \
 				mmap.MAP_SHARED, mmap.PROT_READ | mmap.PROT_WRITE)
 
 	def getDataFromTA(self) :
 
-		#print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
-
-		ser.write('g-all\n'.encode())
-
-		Output_string = ser.readline().decode()
+		############################# This is the function that reads the latest data stored in the TAC ############################# 
 
 		#print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
-		Split_strings_list  = Output_string.split(',')
+		ser.write('g-all\n'.encode()) #Command to get all data from TAC
+
+		Output_string = ser.readline().decode() 
+
+		#print(dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+
+		Split_strings_list  = Output_string.split(',') #parsing output from TAC
 
 		data_list = []
 
@@ -149,7 +156,7 @@ class producer() :
 		return(data_list)
 
 # main program
-prod = producer(5)
+prod = producer(5) #create the producer instance
 loop = asyncio.get_event_loop()
 loop.run_until_complete(prod.produce())
 loop.close()
